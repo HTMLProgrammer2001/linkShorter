@@ -3,7 +3,7 @@ import {Col, Form, Row, FormControl, FormGroup, Button, FormLabel} from 'react-b
 
 import useHttp from '../hooks/useHttp.hook';
 import AuthContext from '../context/auth.context';
-import {ILoginResponse} from '../interfaces/ILoginResponse';
+import {ILoginResponse} from '../interfaces/Responses/ILoginResponse';
 
 
 const AuthPage: React.FC<{}> = () => {

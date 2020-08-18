@@ -20,7 +20,7 @@ router.post('/generate', async (request, response) => {
 			return response.json({link});
 
 		const code = shortid.generate();
-		const to = `/t/${code}`;
+		const to = `${process.env.URI}/t/${code}`;
 
 		link = new Link({owner: request.user.userID, from, to, code});
 		await link.save();
@@ -37,7 +37,7 @@ router.post('/generate', async (request, response) => {
 router.get('/', async (request, response) => {
 	try{
 		const links = await Link.find({owner: request.user.userID});
-		response.json(links);
+		response.json({links});
 	}
 	catch(e){
 		response.status(500).json({
@@ -49,12 +49,40 @@ router.get('/', async (request, response) => {
 router.get('/:id', async (request, response) => {
 	try{
 		const link = await Link.findOne({_id: request.params.id, owner: request.user.userID});
-		response.json(link);
+
+		if(!link)
+			return response.status(404).json({
+				message: 'Not found link with this id'
+			});
+
+		response.json({link});
 	}
 	catch(e){
 		response.status(500).json({
 			message: 'Something went wrong'
 		})
+	}
+});
+
+router.delete('/:id', async (request, response) => {
+	try{
+		const link = await Link.findOne({_id: request.params.id, owner: request.user.userID});
+
+		if(!link)
+			return response.status(404).json({
+				message: 'Not found link with this id'
+			});
+
+		await Link.remove({_id: request.params.id});
+
+		return response.status(200).json({
+			message: 'Link deleted successfully'
+		});
+	}
+	catch(e){
+		response.status(500).json({
+			message: 'Something went wrong'
+		});
 	}
 });
 

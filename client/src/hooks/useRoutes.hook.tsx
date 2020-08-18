@@ -15,7 +15,7 @@ const useRoutes = (isAuthenticated: boolean) => {
 				<Route path="/create" exact component={CreatePage}/>
 				<Route path="/detail/:id" exact component={DetailPage}/>
 
-				<Redirect to="/create"/>
+				<Route path="/" render={() => {console.log('Redirect'); return <Redirect to="/create"/>}}/>
 			</Switch>
 		);
 
@@ -28,3 +28,4 @@ const useRoutes = (isAuthenticated: boolean) => {
 };
 
 export default useRoutes;
+
