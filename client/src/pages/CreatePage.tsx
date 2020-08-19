@@ -14,7 +14,7 @@ const CreatePage: React.FC<{}> = () => {
 
 	const history = useHistory();
 
-	const {request} = useHttp();
+	const {request, errorsFields} = useHttp();
 	const {token} = useContext(AuthContext);
 
 	const formChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +22,8 @@ const CreatePage: React.FC<{}> = () => {
 	};
 
 	const sendHandler = async () => {
+		setLoading(true);
+
 		try {
 			const data: IGenerateResponse = await request<IGenerateResponse>({
 				url: '/api/link/generate',
@@ -35,14 +37,17 @@ const CreatePage: React.FC<{}> = () => {
 			setLoading(false);
 		} catch (e) {
 			toast.error(e.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	return (
 		<Row>
-			<Col xs={{span: 8, offset: 2}}>
+			<Col xs={{span: 6, offset: 3}}>
 				<Form>
 					<FormLabel htmlFor="urlField" column={true}>Enter url to short</FormLabel>
+
 					<FormControl
 						type="text"
 						name="url"
@@ -50,6 +55,10 @@ const CreatePage: React.FC<{}> = () => {
 						value={url}
 						onChange={formChangeHandler}
 					/>
+
+					<FormControl.Feedback type="invalid">
+						{errorsFields['url']}
+					</FormControl.Feedback>
 				</Form>
 
 				<div className="d-flex justify-content-end">

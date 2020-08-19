@@ -10,7 +10,7 @@ const router = Router();
 
 router.use(authMiddleware);
 
-router.post('/generate', async (request, response) => {
+router.post('/generate', [check('url', 'Invalid URL').isURL()], async (request, response) => {
 	try{
 		const {from} = request.body;
 
