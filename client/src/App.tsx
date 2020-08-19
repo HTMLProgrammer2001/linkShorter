@@ -1,6 +1,7 @@
 import React from 'react';
 import {BrowserRouter as Router} from 'react-router-dom';
 import Container from 'react-bootstrap/cjs/Container';
+import {ToastContainer} from 'react-toastify';
 
 import './App.scss';
 import useRoutes from './hooks/useRoutes.hook';
@@ -23,6 +24,8 @@ const App: React.FC<{}> = () => {
 					{routes}
 				</Container>
 			</Router>
+
+			<ToastContainer/>
 		</AuthContext.Provider>
 	);
 };

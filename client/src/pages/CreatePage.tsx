@@ -1,6 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Row, Col, Form, FormLabel, FormControl, Button} from 'react-bootstrap';
 import {useHistory} from 'react-router-dom';
+import {toast} from 'react-toastify';
 
 import useHttp from '../hooks/useHttp.hook';
 import {IGenerateResponse} from '../interfaces/Responses/IGenerateResponse';
@@ -29,12 +30,11 @@ const CreatePage: React.FC<{}> = () => {
 				headers: {Authorization: `Bearer ${token}`}
 			});
 
-			console.log(data);
 			history.push(`/detail/${data.link._id}`);
 
 			setLoading(false);
 		} catch (e) {
-			alert(e.message);
+			toast.error(e.message);
 		}
 	};
 

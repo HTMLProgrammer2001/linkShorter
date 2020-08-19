@@ -1,16 +1,21 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
+import {toast} from 'react-toastify';
+import {Card} from 'react-bootstrap';
 
 import {ILink} from '../interfaces/ILink';
 import useHttp from '../hooks/useHttp.hook';
 import AuthContext from '../context/auth.context';
 import {IGetLinkResponse} from '../interfaces/Responses/IGetLinkResponse';
+import {Button} from 'react-bootstrap';
+import {IDeleteLinkResponse} from '../interfaces/Responses/IDeleteLinkResponse';
 
 
 const DetailPage: React.FC<{}> = () => {
 	const [link, setLink] = useState<ILink>(null);
 	const [error, setError] = useState<string>(null);
-	const [isLoading, setLoading] = useState(true);
+	const [isLoading, setLoading] = useState<boolean>(true);
+	const [isDeleteLoading, setDeletaLoading] = useState<boolean>(false);
 
 	const {request} = useHttp();
 	const {token} = useContext(AuthContext);
@@ -33,6 +38,26 @@ const DetailPage: React.FC<{}> = () => {
 			setError(e.message);
 		}).finally(() => setLoading(false));
 	}, []);
+
+	const deleteLink = async (id: string) => {
+		setDeletaLoading(true);
+
+		try {
+			const data = await request<IDeleteLinkResponse>({
+				url: `/api/link/${id}`,
+				method: 'DELETE',
+				headers: {Authorization: `Bearer ${token}`}
+			});
+
+			toast.success(data.message);
+		}
+		catch (e) {
+			toast.error(e.message);
+		}
+		finally {
+			setDeletaLoading(false);
+		}
+	};
 
 	if(isLoading)
 		return <div>Loading...</div>;
@@ -58,6 +83,15 @@ const DetailPage: React.FC<{}> = () => {
 				<div>
 					<span>To: </span>
 					<a href={link.to} target="_blank">{link.to}</a>
+				</div>
+
+				<div className="justify-content-end">
+					<Button
+						className="my-2"
+						variant="danger"
+						disabled={isDeleteLoading}
+						onClick={() => deleteLink(link._id)}
+					>Delete link</Button>
 				</div>
 			</div>
 		</>
