@@ -1,14 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {toast} from 'react-toastify';
-import {Card} from 'react-bootstrap';
+import {Card, Row} from 'react-bootstrap';
 
-import {ILink} from '../interfaces/ILink';
-import useHttp from '../hooks/useHttp.hook';
-import AuthContext from '../context/auth.context';
-import {IGetLinkResponse} from '../interfaces/Responses/IGetLinkResponse';
+import {ILink} from '../../interfaces/ILink';
+import {IDeleteLinkResponse} from '../../interfaces/Responses/IDeleteLinkResponse';
+import {IGetLinkResponse} from '../../interfaces/Responses/IGetLinkResponse';
+
+import useHttp from '../../hooks/useHttp.hook';
+import AuthContext from '../../context/auth.context';
 import {Button} from 'react-bootstrap';
-import {IDeleteLinkResponse} from '../interfaces/Responses/IDeleteLinkResponse';
+import Loader from '../../components/Loader';
+import Error from '../../components/Error';
+import DetailInfo from './DetailInfo';
 
 
 const DetailPage: React.FC<{}> = () => {
@@ -60,41 +64,34 @@ const DetailPage: React.FC<{}> = () => {
 	};
 
 	if(isLoading)
-		return <div>Loading...</div>;
+		return <Loader/>;
 
 	if(error)
-		return <div className="text-warning">{error}</div>;
+		return <Error text={error}/>;
 
 	return (
-		<>
-			<h1>Detail</h1>
+		<Row className="justify-content-center my-3">
+			<Card className="w-100">
+				<Card.Header>
+					<b>Details</b>
+				</Card.Header>
 
-			<div>
-				<div>ID: {link._id}</div>
-				<div>Code: {link.code}</div>
-				<div>Date of registration: {new Date(link.date).toLocaleString()}</div>
-				<div>Clicks count: {link.visitions.length}</div>
+				<Card.Body>
+					<DetailInfo link={link}/>
+				</Card.Body>
 
-				<div>
-					<span>From: </span>
-					<a href={link.from} target="_blank">{link.from}</a>
-				</div>
-
-				<div>
-					<span>To: </span>
-					<a href={link.to} target="_blank">{link.to}</a>
-				</div>
-
-				<div className="justify-content-end">
-					<Button
-						className="my-2"
-						variant="danger"
-						disabled={isDeleteLoading}
-						onClick={() => deleteLink(link._id)}
-					>Delete link</Button>
-				</div>
-			</div>
-		</>
+				<Card.Footer>
+					<Row className="justify-content-end">
+						<Button
+							className="my-2"
+							variant="danger"
+							disabled={isDeleteLoading}
+							onClick={() => deleteLink(link._id)}
+						>Delete link</Button>
+					</Row>
+				</Card.Footer>
+			</Card>
+		</Row>
 	);
 };
 

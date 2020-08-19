@@ -28,7 +28,7 @@ const CreatePage: React.FC<{}> = () => {
 			const data: IGenerateResponse = await request<IGenerateResponse>({
 				url: '/api/link/generate',
 				method: 'POST',
-				body: {from: url},
+				body: {url},
 				headers: {Authorization: `Bearer ${token}`}
 			});
 
@@ -56,7 +56,7 @@ const CreatePage: React.FC<{}> = () => {
 						onChange={formChangeHandler}
 					/>
 
-					<FormControl.Feedback type="invalid">
+					<FormControl.Feedback type="invalid" className="d-block">
 						{errorsFields['url']}
 					</FormControl.Feedback>
 				</Form>

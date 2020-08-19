@@ -12,7 +12,12 @@ router.use(authMiddleware);
 
 router.post('/generate', [check('url', 'Invalid URL').isURL()], async (request, response) => {
 	try{
-		const {from} = request.body;
+		const errors = validationResult(request);
+
+		if(!errors.isEmpty())
+			return response.status(422).json({message: 'Incorrect data', errors: errors.array()});
+
+		const {url: from} = request.body;
 
 		let link = await Link.findOne({from});
 

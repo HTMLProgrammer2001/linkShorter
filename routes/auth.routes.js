@@ -2,8 +2,10 @@ const {Router} = require('express');
 const bcrypt = require('bcryptjs');
 const {check, validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
+const shortId = require('shortid');
 
 const User = require('../models/User');
+const Mail = require('../services/mail');
 
 
 const authRouter = Router();
@@ -29,11 +31,19 @@ authRouter.post('/register', [
 
 		const salt = await bcrypt.genSalt(+process.env.SALT);
 		const hashedPassword = await bcrypt.hash(password, salt);
-		const user = new User({email, password: hashedPassword});
+		const user = new User({email, password: hashedPassword, confirm: shortId.generate()});
 
 		await user.save();
 
-		response.status(200).json({message: 'User created'});
+		const confirmLink = `localhost:3000/confirm/${user.confirm}`;
+
+		await Mail.send({
+			to: user.email,
+			subject: 'Account confirmation',
+			html: `Check link to confirm your account: <a href="${confirmLink}">Confirm</a>`
+		});
+
+		response.status(200).json({message: 'User created, check your email to activate'});
 	}
 	catch (e) {
 		console.log(e);
@@ -54,10 +64,10 @@ authRouter.post('/login', [
 		return response.status(422).json({message: 'Incorrect data', errors: errors.array()});
 
 	const {email, password} = request.body;
-	const user = await User.findOne({email});
+	const user = await User.findOne({email, confirm: null});
 
 	if(!user)
-		return response.status(404).json({message: 'This user are not registered'});
+		return response.status(404).json({message: 'This user are not registered or activated'});
 
 	const isMatch = await bcrypt.compare(password, user.password);
 
@@ -75,5 +85,25 @@ authRouter.post('/login', [
 		userID: user.id
 	});
 });
+
+authRouter.get('/confirm/:code', async (request, response) => {
+	const code = request.params.code;
+	const user = await User.findOne({confirm: code});
+
+	//not found this user
+	if(!user || !code)
+		return response.status(404).json({
+			message: 'No found'
+		});
+
+	//verify user
+	user.confirm = null;
+	user.save();
+
+	return response.status(200).json({
+		message: 'Email confirmed'
+	});
+});
+
 
 module.exports = authRouter;

@@ -10,7 +10,8 @@ const schema = new Schema({
 	password: {
 		type: String,
 		required: true
-	}
+	},
+	confirm: String
 });
 
 module.exports = model('User', schema);

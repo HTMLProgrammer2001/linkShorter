@@ -9,7 +9,7 @@ const Navbar: React.FC<{}> = () => {
 	const {logout} = useContext(AuthContext);
 
 	return (
-		<Row className="justify-content-between bg-primary p-2 text-white" noGutters>
+		<Row className="justify-content-between bg-primary p-2 text-white align-items-center" noGutters>
 			<NavbarBrand>Short your link</NavbarBrand>
 
 			<Nav>
