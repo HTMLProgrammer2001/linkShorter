@@ -13,6 +13,8 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/link', require('./routes/link.routes'));
 app.use('/t/', require('./routes/visitLink.routes'));
 
+app.use(express.static('./client/build/'));
+
 async function start(){
 	try{
 		await mongoose.connect(process.env.MONGO_URI, {

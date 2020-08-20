@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import {Card, Row} from 'react-bootstrap';
 
@@ -21,6 +21,7 @@ const DetailPage: React.FC<{}> = () => {
 	const [isLoading, setLoading] = useState<boolean>(true);
 	const [isDeleteLoading, setDeletaLoading] = useState<boolean>(false);
 
+	const history = useHistory();
 	const {request} = useHttp();
 	const {token} = useContext(AuthContext);
 
@@ -54,6 +55,8 @@ const DetailPage: React.FC<{}> = () => {
 			});
 
 			toast.success(data.message);
+
+			history.push('/create');
 		}
 		catch (e) {
 			toast.error(e.message);

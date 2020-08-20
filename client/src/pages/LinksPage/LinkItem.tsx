@@ -8,7 +8,12 @@ import useHttp from '../../hooks/useHttp.hook';
 import AuthContext from '../../context/auth.context';
 
 
-const LinkItem: React.FC<ILink & {no: number}> = (props) => {
+type ILinkItemProps = ILink & {
+	no: number,
+	onDelete?: () => void
+};
+
+const LinkItem: React.FC<ILinkItemProps> = (props) => {
 	const [isDeleting, setDeleting] = useState<boolean>(false);
 
 	const {request} = useHttp();
@@ -28,6 +33,9 @@ const LinkItem: React.FC<ILink & {no: number}> = (props) => {
 			});
 
 			toast.success(data.message);
+
+			if(props.onDelete)
+				props.onDelete();
 		}
 		catch (e) {
 			toast.error(e.message);
@@ -42,13 +50,13 @@ const LinkItem: React.FC<ILink & {no: number}> = (props) => {
 			<td>{props.no + 1}</td>
 
 			<td>
-				<a href={props.from} target="_blank">
+				<a href={props.from} target="_blank" rel="noreferrer noopener">
 					{props.from}
 				</a>
 			</td>
 
 			<td>
-				<a href={props.to} target="_blank">
+				<a href={props.to} target="_blank" rel="noreferrer noopener">
 					{props.to}
 				</a>
 			</td>

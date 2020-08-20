@@ -38,6 +38,12 @@ const LinksPage: React.FC<{}> = () => {
 			.finally(() => setLoading(false));
 	}, []);
 
+	//function that remove link from list
+	const removeLink = (id: string) => {
+		let newLinks: ILink[] = links.filter((link) => link._id != id);
+		setLinks(newLinks);
+	};
+
 	if(isLoading)
 		return <Loader/>;
 
@@ -65,7 +71,13 @@ const LinksPage: React.FC<{}> = () => {
 				<tbody>
 					{
 						links.map((link, index) => (
-							<LinkItem {...link} no={index}/>)
+								<LinkItem
+									{...link}
+									key={link._id}
+									no={index}
+									onDelete={() => removeLink(link._id)}
+								/>
+							)
 						)
 					}
 				</tbody>
