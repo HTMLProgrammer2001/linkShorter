@@ -39,30 +39,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var express_1 = require("express");
-var Link_model_1 = __importDefault(require("../models/Link.model"));
-var router = express_1.Router();
-router.get('/:code', function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var code, link;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                code = request.params.code;
-                return [4 /*yield*/, Link_model_1["default"].findOne({ code: code })];
-            case 1:
-                link = _a.sent();
-                //send not found error
-                if (!link)
-                    return [2 /*return*/, response.status(404)];
-                //add visit
-                link.visitions.push({
-                    ip: request.ip,
-                    date: Date.now()
-                });
-                link.save();
-                //redirect to target page
-                return [2 /*return*/, response.redirect(link.from)];
-        }
+var express_1 = __importDefault(require("express"));
+var body_parser_1 = __importDefault(require("body-parser"));
+var mongoose_1 = __importDefault(require("mongoose"));
+require('dotenv').config();
+var auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+var link_routes_1 = __importDefault(require("./routes/link.routes"));
+var visitLink_routes_1 = __importDefault(require("./routes/visitLink.routes"));
+var app = express_1["default"]();
+var PORT = process.env.PORT || 5000;
+app.use(body_parser_1["default"].json());
+app.use('/api/auth', auth_routes_1["default"]);
+app.use('/api/link', link_routes_1["default"]);
+app.use('/t/', visitLink_routes_1["default"]);
+app.use(express_1["default"].static('./client/build/'));
+function start() {
+    return __awaiter(this, void 0, void 0, function () {
+        var e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, mongoose_1["default"].connect(process.env.MONGO_URI, {
+                            useNewUrlParser: true,
+                            useUnifiedTopology: true,
+                            useCreateIndex: true
+                        })];
+                case 1:
+                    _a.sent();
+                    app.listen(PORT, function () {
+                        console.log("App started on port " + PORT);
+                    });
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_1 = _a.sent();
+                    console.log("Server error " + e_1.message);
+                    process.exit(1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); });
-exports["default"] = router;
+}
+;
+start();
