@@ -21,7 +21,7 @@ app.use('/t/', visitRoutes);
 app.use(express.static('./client/build/'));
 
 async function start(){
-	const mongoURL: string = process.env.MONGO_URI || process.env.MONGO_LOCALE_URI;
+	const mongoURL: string = process.env.MONGODB_URI || process.env.MONGO_LOCALE_URI;
 
 	try{
 		await mongoose.connect(mongoURL, {

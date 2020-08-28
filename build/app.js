@@ -59,7 +59,7 @@ function start() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    mongoURL = process.env.MONGO_URI || process.env.MONGO_LOCALE_URI;
+                    mongoURL = process.env.MONGODB_URI || process.env.MONGO_LOCALE_URI;
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
