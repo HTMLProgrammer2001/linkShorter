@@ -21,8 +21,10 @@ app.use('/t/', visitRoutes);
 app.use(express.static('./client/build/'));
 
 async function start(){
+	const mongoURL: string = process.env.MONGO_URI || process.env.MONGO_LOCALE_URI;
+
 	try{
-		await mongoose.connect(<string>process.env.MONGO_URI, {
+		await mongoose.connect(mongoURL, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useCreateIndex: true
