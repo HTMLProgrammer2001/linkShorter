@@ -49,9 +49,9 @@ var visitLink_routes_1 = __importDefault(require("./routes/visitLink.routes"));
 var app = express_1["default"]();
 var PORT = process.env.PORT || 5000;
 app.use(body_parser_1["default"].json());
+app.use('/t/', visitLink_routes_1["default"]);
 app.use('/api/auth', auth_routes_1["default"]);
 app.use('/api/link', link_routes_1["default"]);
-app.use('/t/', visitLink_routes_1["default"]);
 app.use(express_1["default"].static('./client/build/'));
 function start() {
     return __awaiter(this, void 0, void 0, function () {
